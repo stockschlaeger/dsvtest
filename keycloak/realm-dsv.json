@@ -1,0 +1,156 @@
+{
+  "realm": "dsv",
+  "displayName": "Keycloak der Organisation (lokale Nachbildung)",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "clients": [
+    {
+      "clientId": "dsv-web",
+      "name": "DSV",
+      "description": "Einziger Client der App; Keycloak meldet nur an – Rollen und Rechte verwaltet die App",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "implicitFlowEnabled": false,
+      "rootUrl": "http://localhost:3000",
+      "baseUrl": "/",
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:5001/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://localhost:5001"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:3000/*##http://localhost:5001/*"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "leser",
+      "enabled": true,
+      "email": "leser@dsv.local",
+      "emailVerified": true,
+      "firstName": "Lea",
+      "lastName": "Leser",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "leser",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "bearbeiter",
+      "enabled": true,
+      "email": "bearbeiter@dsv.local",
+      "emailVerified": true,
+      "firstName": "Ben",
+      "lastName": "Bearbeiter",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "bearbeiter",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "referat77",
+      "enabled": true,
+      "email": "referat77@dsv.local",
+      "emailVerified": true,
+      "firstName": "Rita",
+      "lastName": "Reinhardt",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "referat77",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "referat12",
+      "enabled": true,
+      "email": "referat12@dsv.local",
+      "emailVerified": true,
+      "firstName": "Paula",
+      "lastName": "Personal",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "referat12",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "abteilung7",
+      "enabled": true,
+      "email": "abteilung7@dsv.local",
+      "emailVerified": true,
+      "firstName": "Anton",
+      "lastName": "Abteilungsleiter",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "abteilung7",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "registratur",
+      "enabled": true,
+      "email": "registratur@dsv.local",
+      "emailVerified": true,
+      "firstName": "Regina",
+      "lastName": "Registratur",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "registratur",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "admin",
+      "enabled": true,
+      "email": "admin@dsv.local",
+      "emailVerified": true,
+      "firstName": "Alex",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "m.neumann",
+      "enabled": true,
+      "email": "m.neumann@dsv.local",
+      "emailVerified": true,
+      "firstName": "Mia",
+      "lastName": "Neumann",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "m.neumann",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

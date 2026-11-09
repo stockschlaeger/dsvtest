@@ -1,0 +1,33 @@
+{
+  "name": "dsv",
+  "version": "4.0.0",
+  "description": "DSV – Schriftgutverwaltung (Lift & Shift der Oracle-Altanwendung auf PostgreSQL, lokale Anmeldung oder Keycloak)",
+  "main": "index.js",
+  "scripts": {
+    "infra:up": "docker compose up -d",
+    "infra:keycloak": "docker compose --profile keycloak up -d",
+    "infra:down": "docker compose --profile keycloak down",
+    "install:alle": "npm install && npm --prefix backend install && npm --prefix frontend install",
+    "db:init": "npm --prefix backend run db:init",
+    "db:beispiele": "npm --prefix backend run db:beispiele",
+    "db:app": "npm --prefix backend run db:app",
+    "passwort": "npm --prefix backend run passwort --",
+    "db:selbsttest": "npm --prefix backend run db:selbsttest --",
+    "dev": "concurrently -n api,web \"npm --prefix backend run dev\" \"npm --prefix frontend start\"",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start"
+  },
+  "keywords": [
+    "schriftgutverwaltung",
+    "e-akte",
+    "dms",
+    "keycloak",
+    "react",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

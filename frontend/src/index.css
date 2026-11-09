@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primaer {
+    @apply border-blue-700 bg-blue-700 text-white hover:bg-blue-800;
+  }
+  .btn-sekundaer {
+    @apply border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
+  }
+  .btn-gefahr {
+    @apply border-red-300 bg-white text-red-700 hover:bg-red-50;
+  }
+  .input {
+    @apply w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-slate-500;
+  }
+  .karte {
+    @apply rounded-lg border border-slate-200 bg-white p-5;
+  }
+  .karte-titel {
+    @apply mb-4 text-sm font-semibold text-slate-900;
+  }
+  .tabelle {
+    @apply w-full text-left text-sm;
+  }
+  .tabelle th {
+    @apply border-b border-slate-200 px-3 py-2 text-xs font-medium text-slate-500;
+  }
+  .tabelle td {
+    @apply border-b border-slate-100 px-3 py-2 align-top;
+  }
+  .tabelle tbody tr {
+    @apply hover:bg-slate-50;
+  }
+  .az {
+    @apply font-mono text-xs text-slate-600;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-800 ring-1 ring-blue-100;
+  }
+  .link {
+    @apply font-medium text-blue-700 hover:underline;
+  }
+}
