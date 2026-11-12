@@ -94,12 +94,11 @@ async function anmeldungAendern(user, login, eingabe) {
   if (eingabe.gesperrt !== undefined) neu.gesperrt = Boolean(eingabe.gesperrt);
   const geaendert = unterschiede(alt, neu);
   if (!Object.keys(geaendert).length) return;
-  await zeile(`
-    UPDATE dsv_app.anmeldung SET user_id = $2, gesperrt = $3,
-      zugeordnet_von = CASE WHEN ${d.gleich('user_id', '$2')} THEN zugeordnet_von ELSE $4 END,
-      zugeordnet_am = CASE WHEN ${d.gleich('user_id', '$2')} THEN zugeordnet_am ELSE CURRENT_TIMESTAMP END
-    WHERE login = $1
-  `, [login, neu.user_id !== undefined ? neu.user_id : alt.user_id, neu.gesperrt ?? alt.gesperrt, user.login]);
+  // Zuordnungsstempel nur, wenn sich die Altkennung ändert
+  const zuordnung = 'user_id' in geaendert ? ', zugeordnet_von = $4, zugeordnet_am = CURRENT_TIMESTAMP' : '';
+  await query(`UPDATE dsv_app.anmeldung SET user_id = $2, gesperrt = $3${zuordnung} WHERE login = $1`, [
+    login, neu.user_id !== undefined ? neu.user_id : alt.user_id, neu.gesperrt ?? alt.gesperrt, ...(zuordnung ? [user.login] : [])
+  ]);
   if (neu.gesperrt) await lokal.sitzungenBeenden(login);
   await protokolliere(user, 'anmeldung', login, 'geaendert', geaendert);
   fertig();

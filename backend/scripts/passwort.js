@@ -1,7 +1,10 @@
 // Passwort für einen Login der lokalen Anmeldung setzen; legt den Login bei Bedarf an (z. B. den ersten Admin aus DSV_ADMINS).
 //   npm run passwort -- <login>                     Startpasswort erzeugen und ausgeben
 //   npm run passwort -- <login> --altkennung ADMIN  dabei der Altkennung zuordnen
-// Das Startpasswort muss bei der ersten Anmeldung geändert werden.
+//   npm run passwort -- test --testzugang --altkennung ADMIN
+//                                                   Testzugang: Passwort = Login (oder --passwort X), ohne Passwortregeln
+//                                                   und ohne Pflicht zur Änderung – nur für Test und Entwicklung
+// Sonst ist es ein Startpasswort, das bei der ersten Anmeldung geändert werden muss.
 const path = require('path');
 
 try {
@@ -10,12 +13,15 @@ try {
   // keine .env vorhanden
 }
 
-const { query, zeile, beenden } = require('../src/db');
+const { query, zeile, beenden, dialekt } = require('../src/db');
 const lokal = require('../src/lokaleAnmeldung');
+const { hashen } = require('../src/passwort');
 
 const argumente = process.argv.slice(2);
-const login = lokal.loginAus(argumente.find((a, i) => !a.startsWith('--') && argumente[i - 1] !== '--altkennung'));
-const altkennung = argumente.includes('--altkennung') ? String(argumente[argumente.indexOf('--altkennung') + 1] || '').toUpperCase() : null;
+const wert = (name) => (argumente.includes(name) ? String(argumente[argumente.indexOf(name) + 1] || '') : null);
+const login = lokal.loginAus(argumente.find((a, i) => !a.startsWith('--') && !['--altkennung', '--passwort'].includes(argumente[i - 1])));
+const altkennung = wert('--altkennung')?.toUpperCase() || null;
+const testzugang = argumente.includes('--testzugang');
 
 (async () => {
   if (!login) throw new Error('Aufruf: npm run passwort -- <login> [--altkennung KENNUNG]');
@@ -28,8 +34,17 @@ const altkennung = argumente.includes('--altkennung') ? String(argumente[argumen
   } else if (userId && userId !== vorhanden.user_id) {
     await query(`UPDATE dsv_app.anmeldung SET user_id = $2, zugeordnet_von = 'konsole', zugeordnet_am = CURRENT_TIMESTAMP WHERE login = $1`, [login, userId]);
   }
-  const passwort = await lokal.passwortSetzen(login);
-  console.log(`Login:          ${login}${userId ? ` (Altkennung ${userId})` : ' (noch keiner Altkennung zugeordnet)'}`);
+  const zuordnung = `${login}${userId ? ` (Altkennung ${userId})` : ' (noch keiner Altkennung zugeordnet – in der Benutzerverwaltung zuordnen)'}`;
+  if (testzugang) {
+    const passwort = wert('--passwort') || login;
+    await query(`UPDATE dsv_app.anmeldung SET passwort_hash = $2, passwort_aendern = ${dialekt.nein}, passwort_gesetzt_am = CURRENT_TIMESTAMP,
+      fehlversuche = 0, gesperrt_bis = NULL, gesperrt = ${dialekt.nein} WHERE login = $1`, [login, await hashen(passwort)]);
+    console.log(`Testzugang:     ${zuordnung}`);
+    console.log(`Passwort:       ${passwort}   – ohne Passwortregeln, nur für Test und Entwicklung`);
+    return;
+  }
+  const passwort = await lokal.passwortSetzen(login, wert('--passwort'));
+  console.log(`Login:          ${zuordnung}`);
   console.log(`Startpasswort:  ${passwort}   – muss bei der ersten Anmeldung geändert werden`);
 })()
   .catch((error) => {

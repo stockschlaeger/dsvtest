@@ -16,9 +16,11 @@ spaltenInfo()
   .then(async (spalten) => {
     if (!spalten.has('dsv_akte')) throw new Error(`Im Schema "${config.datenbank.schema || config.datenbank.oracle.user}" fehlen die DSV-Tabellen`);
     if (dialekt.oracle && !spalten.has('dsv_app_anmeldung')) throw new Error('App-Tabellen DSV_APP_* fehlen – npm run db:app ausführen');
-    // PostgreSQL: upper() muss „ß“ unverändert lassen wie Oracle UPPER, sonst verletzen Altdaten die Prüfregeln
-    const { gleich } = dialekt.oracle ? { gleich: true } : await zeile(`SELECT upper('ß') = 'ß' AS gleich`);
-    if (!gleich) console.warn(`WARNUNG: upper('ß') ist in dieser Datenbank nicht 'ß' – Datenbank mit LOCALE_PROVIDER builtin, BUILTIN_LOCALE 'C.UTF-8' anlegen (siehe README)`);
+    // PostgreSQL: upper() muss „ß“ unverändert lassen wie Oracle UPPER – über die Locale der Datenbank oder
+    // COLLATE pg_c_utf8 in den Prüfregeln (npm run db:nach-ora2pg); sonst verletzen Stichworte mit „ß“ die Prüfregeln
+    const { gleich } = dialekt.oracle ? { gleich: true } : await zeile(`SELECT upper('ß') = 'ß' OR EXISTS (SELECT 1 FROM pg_constraint
+      WHERE conname = 'chkstichwort' AND pg_get_constraintdef(oid) LIKE '%pg_c_utf8%') AS gleich`);
+    if (!gleich) console.warn(`WARNUNG: upper('ß') ergibt hier nicht 'ß' – Stichworte mit „ß“ verletzen die Prüfregeln. Abhilfe: npm run db:nach-ora2pg -- --ausfuehren`);
     app.listen(config.port, () => {
       console.log(`DSV-API läuft auf http://localhost:${config.port}`);
       console.log(config.anmeldung.modus === 'lokal'

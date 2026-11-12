@@ -10,7 +10,9 @@
     "db:beispiele": "node scripts/db-init.js --beispiele",
     "db:app": "node scripts/db-init.js --nur-app",
     "passwort": "node scripts/passwort.js",
-    "db:selbsttest": "node scripts/selbsttest.js"
+    "db:selbsttest": "node scripts/selbsttest.js",
+    "logins:uebernehmen": "node scripts/logins-uebernehmen.js",
+    "db:nach-ora2pg": "node scripts/nach-ora2pg.js"
   },
   "keywords": [
     "schriftgutverwaltung",

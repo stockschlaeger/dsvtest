@@ -150,6 +150,13 @@ Die Codes in den Beispiel-Wertelisten (`DSV_LOV_*`) sind nach dem Handbuch gewä
 5. Sequenzen auf den aktuellen Oracle-Stand setzen. In Oracle `SELECT sequence_name, last_number FROM user_sequences;` abfragen, dann je Sequenz in Postgres `SELECT setval('dsv_seq_akte', <LAST_NUMBER>, false);`. Das gilt auch für die absteigenden Sequenzen (Akte, Vorgang, Aktenplan, Umregistrierung).
 6. Lokale Anmeldung: ersten Admin anlegen, z. B. `npm run passwort -- admin`. Der Login muss in `DSV_ADMINS` stehen oder einer Altkennung mit Rolle SY zugeordnet sein. Das ausgegebene Startpasswort gilt für die erste Anmeldung; die übrigen Logins legt der Admin in der Benutzerverwaltung an.
 
+**Schema von ora2pg selbst angelegt** (statt `altschema.sql`): danach
+- `npm run db:app` – App-Tabellen im Schema `dsv_app`
+- `npm run db:nach-ora2pg` – zeigt Abweichungen zu `altschema.sql`; `-- --ausfuehren` behebt sie in einer Transaktion: Prüfregeln mit `upper()` erhalten `COLLATE pg_c_utf8` (ab PostgreSQL 17; „ß“ bleibt wie bei Oracle), fehlende Schlüssel und Indizes (z. B. `PKVORG`, `NULLS NOT DISTINCT`), Sequenzen hinter den vergebenen Nummern
+- `npm run logins:uebernehmen` – Logins (mit Passwort-Hashes) und Protokoll aus den mitübertragenen Tabellen `dsv_app_anmeldung`/`dsv_app_protokoll`; gab es unter Oracle keine App-Logins: `-- --aus-kennungen` legt je Altkennung einen Login mit Startpasswort an
+- Testzugang ohne Passwortregeln: `npm run passwort -- test --testzugang --altkennung KENNUNG` (Passwort = Login)
+- `npm run db:selbsttest`
+
 Später nur die App-Tabellen ergänzen: `npm run db:app` (legt fehlende Tabellen und Spalten an; vorhandene Logins bleiben erhalten).
 
 Worauf beim Import zu achten ist:

@@ -13,6 +13,8 @@
     "db:app": "npm --prefix backend run db:app",
     "passwort": "npm --prefix backend run passwort --",
     "db:selbsttest": "npm --prefix backend run db:selbsttest --",
+    "logins:uebernehmen": "npm --prefix backend run logins:uebernehmen --",
+    "db:nach-ora2pg": "npm --prefix backend run db:nach-ora2pg --",
     "dev": "concurrently -n api,web \"npm --prefix backend run dev\" \"npm --prefix frontend start\"",
     "build": "npm --prefix frontend run build",
     "start": "npm --prefix backend start"

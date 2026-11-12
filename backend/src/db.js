@@ -221,7 +221,7 @@ const dialekt = {
   zeitpunkt: (p) => (oracle ? `TO_DATE(${p}, 'YYYY-MM-DD"T"HH24:MI:SS')` : `CAST(${p} AS timestamp)`),
   minuten: (p) => (oracle ? `NUMTODSINTERVAL(${p}, 'MINUTE')` : `make_interval(mins => ${p})`),
   // a = b, wobei NULL = NULL gilt
-  gleich: (a, b) => `(${a} = ${b} OR (${a} IS NULL AND ${b} IS NULL))`,
+  gleich: (a, b) => (oracle ? `(${a} = ${b} OR (${a} IS NULL AND ${b} IS NULL))` : `${a} IS NOT DISTINCT FROM ${b}`),
   textListe: (ausdruck, trenner) =>
     (oracle ? `LISTAGG(${ausdruck}, '${trenner}') WITHIN GROUP (ORDER BY ${ausdruck})` : `string_agg(${ausdruck}, '${trenner}' ORDER BY ${ausdruck})`)
 };
