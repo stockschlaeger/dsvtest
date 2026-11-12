@@ -9,8 +9,11 @@ const { HttpFehler } = require('./fehler');
 const FELDER = ['kuerzel', 'bezeichnung_1', 'bezeichnung_2', 'bezeichnung_3', 'anrede', 'strasse', 'hausnummer', 'plz', 'ort', 'land',
   'telnr', 'gebdatum', 'oeffentlich', 'obsolet', 'gueltig_ab'];
 
+// Zusätzlich sieht die Registratur private Adressen, die noch an keinem Dokument hängen – sonst könnte sie eine neu
+// erfasste Adresse weder ändern noch beim Registrieren als Einsender/Empfänger auswählen.
 const sichtbar = (q, user) => `(a.oeffentlich = 'J' OR EXISTS (SELECT 1 FROM dsv_doku_adr z JOIN dsv_doku d ON d.lfd_doknr = z.lfd_doknr
-  WHERE z.adr_nr = a.adr_nr AND ${zugriff.lesenDokument(q, user, 'd')}))`;
+  WHERE z.adr_nr = a.adr_nr AND ${zugriff.lesenDokument(q, user, 'd')})${user.registratur
+  ? ' OR NOT EXISTS (SELECT 1 FROM dsv_doku_adr z2 WHERE z2.adr_nr = a.adr_nr)' : ''})`;
 
 async function liste(user, { q: text, mitObsoleten } = {}) {
   const q = new Sql();
