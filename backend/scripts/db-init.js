@@ -30,6 +30,10 @@ async function oracle() {
     throw new Error('Bei Oracle legt die App keine Alttabellen an und löscht nichts. Nur „npm run db:app“ (Tabellen DSV_APP_*).');
   }
   const { query, beenden } = require('../src/db');
+
+// Fehlermeldung auch für Verbindungsfehler ohne Text (z. B. ECONNREFUSED als AggregateError)
+const fehlerText = (error) => [error.message, error.code, ...(error.errors || []).map((e) => `${e.code || ''} ${e.address || ''}:${e.port || ''} ${e.message || ''}`.trim())]
+  .filter(Boolean).join(' | ') || String(error);
   const anweisungen = datei('app-schema-oracle.sql')
     .split('\n').filter((zeile) => !zeile.trim().startsWith('--')).join('\n')
     .split(';').map((anweisung) => anweisung.trim()).filter(Boolean);
@@ -51,7 +55,7 @@ async function oracle() {
 
 if (config.datenbank.typ === 'oracle') {
   oracle().catch((error) => {
-    console.error('Fehler:', error.message);
+    console.error('Fehler:', fehlerText(error));
     process.exit(1);
   });
 } else (async () => {
@@ -78,6 +82,6 @@ if (config.datenbank.typ === 'oracle') {
   }
   await client.end();
 })().catch((error) => {
-  console.error('Fehler:', error.message);
+  console.error('Fehler:', fehlerText(error));
   process.exit(1);
 });

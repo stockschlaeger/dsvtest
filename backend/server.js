@@ -11,6 +11,10 @@ const app = require('./src/app');
 const config = require('./src/config');
 const { spaltenInfo, zeile, dialekt } = require('./src/db');
 
+// Fehlermeldung auch für Verbindungsfehler ohne Text (z. B. ECONNREFUSED als AggregateError)
+const fehlerText = (error) => [error.message, error.code, ...(error.errors || []).map((e) => `${e.code || ''} ${e.address || ''}:${e.port || ''} ${e.message || ''}`.trim())]
+  .filter(Boolean).join(' | ') || String(error);
+
 // Verbindung und Altschema beim Start prüfen
 spaltenInfo()
   .then(async (spalten) => {
@@ -32,6 +36,6 @@ spaltenInfo()
     });
   })
   .catch((error) => {
-    console.error('Start fehlgeschlagen:', error.message);
+    console.error('Start fehlgeschlagen:', fehlerText(error));
     process.exit(1);
   });

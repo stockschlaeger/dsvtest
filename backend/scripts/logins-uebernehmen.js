@@ -24,6 +24,10 @@ const config = require('../src/config');
 const { query, zeile, zeilen, transaktion, beenden } = require('../src/db');
 const lokal = require('../src/lokaleAnmeldung');
 
+// Fehlermeldung auch für Verbindungsfehler ohne Text (z. B. ECONNREFUSED als AggregateError)
+const fehlerText = (error) => [error.message, error.code, ...(error.errors || []).map((e) => `${e.code || ''} ${e.address || ''}:${e.port || ''} ${e.message || ''}`.trim())]
+  .filter(Boolean).join(' | ') || String(error);
+
 // Je Altkennung ohne Login einen Login mit Startpasswort anlegen
 async function ausKennungen() {
   const ohneLogin = await zeilen(`
@@ -115,7 +119,7 @@ async function quelle(tabelle) {
   console.log('Fertig. Die Quelltabellen sind unverändert und können nach der Prüfung gelöscht werden.');
 })()
   .catch((error) => {
-    console.error('Fehler:', error.message);
+    console.error('Fehler:', fehlerText(error));
     process.exitCode = 1;
   })
   .finally(() => beenden());

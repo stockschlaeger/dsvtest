@@ -17,6 +17,10 @@ const { query, zeile, beenden, dialekt } = require('../src/db');
 const lokal = require('../src/lokaleAnmeldung');
 const { hashen } = require('../src/passwort');
 
+// Fehlermeldung auch für Verbindungsfehler ohne Text (z. B. ECONNREFUSED als AggregateError)
+const fehlerText = (error) => [error.message, error.code, ...(error.errors || []).map((e) => `${e.code || ''} ${e.address || ''}:${e.port || ''} ${e.message || ''}`.trim())]
+  .filter(Boolean).join(' | ') || String(error);
+
 const argumente = process.argv.slice(2);
 const wert = (name) => (argumente.includes(name) ? String(argumente[argumente.indexOf(name) + 1] || '') : null);
 const login = lokal.loginAus(argumente.find((a, i) => !a.startsWith('--') && !['--altkennung', '--passwort'].includes(argumente[i - 1])));
@@ -48,7 +52,7 @@ const testzugang = argumente.includes('--testzugang');
   console.log(`Startpasswort:  ${passwort}   – muss bei der ersten Anmeldung geändert werden`);
 })()
   .catch((error) => {
-    console.error('Fehler:', error.message);
+    console.error('Fehler:', fehlerText(error));
     process.exitCode = 1;
   })
   .finally(() => beenden());

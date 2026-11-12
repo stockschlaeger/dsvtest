@@ -28,6 +28,10 @@ const protokoll = require('../src/protokoll');
 const lov = require('../src/lov');
 const { systemprofil } = require('../src/systemprofil');
 
+// Fehlermeldung auch für Verbindungsfehler ohne Text (z. B. ECONNREFUSED als AggregateError)
+const fehlerText = (error) => [error.message, error.code, ...(error.errors || []).map((e) => `${e.code || ''} ${e.address || ''}:${e.port || ''} ${e.message || ''}`.trim())]
+  .filter(Boolean).join(' | ') || String(error);
+
 const ergebnis = { ok: 0, fachlich: 0, fehler: 0 };
 const ZURUECK = new Error('Selbsttest beendet – Transaktion wird zurückgerollt');
 
@@ -202,7 +206,7 @@ db.transaktion(async () => {
   .catch((error) => {
     if (error !== ZURUECK) {
       ergebnis.fehler += 1;
-      console.log(`✘ Abbruch: ${error.message}`);
+      console.log(`✘ Abbruch: ${fehlerText(error)}`);
     }
   })
   .finally(async () => {
