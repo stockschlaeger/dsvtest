@@ -74,8 +74,8 @@ Bei der lokalen Anmeldung gilt:
 **Vertretung (Registratur):** Ist A als Vertreter von B eingetragen (beide Registratur), wählt A im Kopf „handeln als B“. Dann gelten Bs Zuständigkeiten, und Registrierungen tragen `*_REGISTRATOR = B` und `*_REG_VERTRETER = A`.
 
 **Status und Geschäftsgang** (Handbuch 5.2):
-- Neues Schriftgut erhält den Status `DSV_STATUS_NEU` (Standard `oV`, ohne Verfügung).
-- „Im Geschäftsgang bei“ (`BEARBEITER`) eintragen = Ausleihe, Status wird `GG`. Es gibt höchstens eine Ausleihe; Austragen = Rückgabe, Status wird wieder `oV`. Ein anderer Status entlastet den Bearbeiter.
+- Neues Schriftgut erhält den Status `DSV_STATUS_NEU` (Standard `neu`, ohne Verfügung).
+- „Im Geschäftsgang bei“ (`BEARBEITER`) eintragen = Ausleihe, Status wird `GG`. Es gibt höchstens eine Ausleihe; Austragen = Rückgabe, Status wird wieder `neu`. Ein anderer Status entlastet den Bearbeiter.
 - `GG`, `WV`, `umreg.`, `Archiv`, `g` setzen nur Fachfunktionen, nicht die Statusauswahl (`DSV_STATUS_SYSTEM`).
 - Jede Statusänderung setzt `DATUM_LETZTEVERF`, beim Dokument auch am Vorgang.
 - **Bereitstellen** einer Anforderung (Registratur) leiht das Schriftgut an den Empfänger aus (Status `GG`) und trägt die Anforderung aus.
@@ -120,7 +120,7 @@ Mit Keycloak testen: `npm run infra:keycloak` startet zusätzlich einen lokalen 
 | `admin` | ADMIN | REG, ST, DS | 11 schreiben; Benutzerverwaltung über `DSV_ADMINS`; vertritt REGISTRATUR |
 | `m.neumann` | – | – | nicht zugeordnet → in der Benutzerverwaltung zuordnen |
 
-Die Codes in den Beispiel-Wertelisten (`DSV_LOV_*`) sind nach dem Handbuch gewählt (Status `oV`, `zdA`, `wegl.`, `gesp.`, `Altreg.`, `GG`, `WV`, `umreg.`, `Archiv`, `g`; Form `P`/`EL`). Weichen sie im Bestand ab, die `DSV_STATUS_*`-Variablen anpassen.
+Die Codes in den Beispiel-Wertelisten (`DSV_LOV_*`) entsprechen dem Bestand (Status `neu`, `zdA`, `wegl.`, `Sperre`, `Altreg.`, `GG`, `WV`, `umreg.`, `Archiv`, `g`; Form `P`/`EL`). Weichen sie im Bestand ab, die `DSV_STATUS_*`-Variablen anpassen.
 
 ## Übernahme des Bestands (ora2pg)
 
@@ -184,7 +184,7 @@ Worauf beim Import zu achten ist:
 | `DSV_ADMINS` | – | Logins mit Zugriff auf die Benutzerverwaltung auch ohne Altkennung (kommagetrennt) |
 | `DSV_ADMIN_KLASSE` | `SY` | Rolle der Altanwendung für die Benutzerverwaltung |
 | `DSV_RECHT_LESEN` | `L` | GVP-Recht „nur lesen“ |
-| `DSV_STATUS_NEU` | `oV` | Status für neues Schriftgut und nach Rückgabe |
+| `DSV_STATUS_NEU` | `neu` | Status für neues Schriftgut und nach Rückgabe |
 | `DSV_STATUS_GG` | `GG` | Status „im Geschäftsgang“ |
 | `DSV_STATUS_SYSTEM` | `GG,WV,umreg.,Archiv,g` | Status, die nur Fachfunktionen setzen |
 | `PORT` | `5001` | API-Port |
@@ -226,7 +226,7 @@ Die Oberfläche fragt den Anmeldemodus beim Start vom Backend ab (`GET /api`); e
 Am echten Bestand zu klären:
 - **Codes der Wertelisten:** Stimmen Status, Form und E/A/I mit `DSV_LOV_*` überein? Sonst `DSV_STATUS_*` anpassen.
 - **Registrator-Felder:** Steht im Bestand die `USER_ID` (wie die App schreibt) oder die `KENNUNG` in `ERST_REGISTRATOR`/`AEND_REGISTRATOR`?
-- **Status nach Rückgabe** aus dem Geschäftsgang: Die App setzt `oV`. War es früher der Status vor der Ausleihe?
+- **Status nach Rückgabe** aus dem Geschäftsgang: Die App setzt `neu`. War es früher der Status vor der Ausleihe?
 
 Noch nicht umgesetzt (laut Handbuch vorhanden):
 - Umregistrieren (`DSV_UMREG`); die Herkunft wird nur angezeigt.

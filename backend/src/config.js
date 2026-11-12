@@ -51,7 +51,7 @@ module.exports = {
   rechtLesen: process.env.DSV_RECHT_LESEN || 'L',
   // Status-Codes aus DSV_LOV_STATUS (Handbuch Kap. 5.2): neues Schriftgut, Geschäftsgang, nur über Fachfunktionen setzbar
   status: {
-    neu: process.env.DSV_STATUS_NEU || 'oV',
+    neu: process.env.DSV_STATUS_NEU || 'neu',
     geschaeftsgang: process.env.DSV_STATUS_GG || 'GG',
     system: (process.env.DSV_STATUS_SYSTEM || 'GG,WV,umreg.,Archiv,g').split(',').map((s) => s.trim()).filter(Boolean)
   }

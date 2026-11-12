@@ -113,8 +113,9 @@ async function stichwortVorschlag(betreff) {
   let text = grossWieOracle(betreff || '');
   for (const zeichen of profil.sonderzeichen ?? '-/()"\'') text = text.split(zeichen).join(' ');
   let worte = text.split(/\s+/).filter(Boolean);
-  if (profil.stw_option_wortende == null || aktiv(profil.stw_option_wortende)) worte = worte.map((w) => w.replace(/[.,;:!?]+$/, ''));
-  if (profil.stw_option_zahlen == null || aktiv(profil.stw_option_zahlen)) worte = worte.filter((w) => !/^\d+$/.test(w));
+  // Optionen der Stoppwortmaske (Handbuch 6.6.1); leer = nicht markiert
+  if (aktiv(profil.stw_option_wortende)) worte = worte.map((w) => w.replace(/[.,;:]+$/, ''));
+  if (aktiv(profil.stw_option_zahlen)) worte = worte.filter((w) => !/^\d+$/.test(w));
   worte = [...new Set(worte.filter((w) => w && w.length <= 50))];
   if (!worte.length) return [];
   const sq = new Sql();

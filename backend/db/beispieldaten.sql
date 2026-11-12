@@ -8,7 +8,7 @@ INSERT INTO dsv_lov_eai VALUES ('E', 'Eingang'), ('A', 'Ausgang'), ('I', 'Intern
 INSERT INTO dsv_lov_form VALUES ('P', 'Papier'), ('EL', 'elektronisch');
 INSERT INTO dsv_lov_klasse VALUES ('OF', 'offen'), ('NF', 'VS-NfD');
 INSERT INTO dsv_lov_status VALUES
-  ('oV', 'ohne Verfügung'), ('zdA', 'zu den Akten'), ('wegl.', 'weglegen'), ('gesp.', 'gesperrt'), ('Altreg.', 'Altregistratur'),
+  ('neu', 'ohne Verfügung'), ('zdA', 'zu den Akten'), ('wegl.', 'weglegen'), ('Sperre', 'gesperrt'), ('Altreg.', 'Altregistratur'),
   ('GG', 'Geschäftsgang'), ('WV', 'Wiedervorlage'), ('umreg.', 'umregistriert'), ('Archiv', 'Archiv'), ('g', 'gelöscht');
 INSERT INTO dsv_lov_rechte VALUES ('L', 'Lesen'), ('S', 'Schreiben');
 INSERT INTO dsv_lov_schriftgutart VALUES ('A', 'Akte'), ('V', 'Vorgang'), ('D', 'Dokument');
@@ -70,33 +70,33 @@ INSERT INTO dsv_vertretung (registrator, vertreter) VALUES ('REGISTRATUR', 'ADMI
 
 -- Akten (ORG + Aktenplanposition, Aktenzeichen ORG-AKTE)
 INSERT INTO dsv_akte (lfd_aktenr, lfd_apnr, org, hgruppe, gruppe, ugruppe, tglieder, akte, betreff, bemerkung, status, bearbeiter, erst_registrator, erst_regdatum, aend_registrator, aend_regdatum) VALUES
-  (-20000001, -10000005, '72c', '00', '2', '2', 'NB', '0022.NB', 'Notebooks und Zubehör', 'Ersatzbeschaffung 2026', 'oV', NULL, 'REGISTRATUR', '2026-02-10 09:00', NULL, NULL),
-  (-20000002, -10000006, '11', '00', '3', NULL, NULL, '003', 'Liegenschaften', 'Lagerhalle Süd', 'oV', NULL, 'REGISTRATUR', '2025-06-03 10:30', NULL, NULL),
-  (-20000003, -10000008, '12', '10', '1', '1', NULL, '1011', 'Stellenbesetzung', NULL, 'oV', NULL, 'REGISTRATUR', '2026-09-01 08:15', NULL, NULL),
-  (-20000004, -10000009, '77', '20', '1', NULL, NULL, '201', 'IT-Projekte', NULL, 'oV', NULL, 'REGISTRATUR', '2025-11-20 14:00', NULL, NULL),
-  (-20000005, -10000009, '72c', '20', '1', NULL, NULL, '201', 'IT-Projekte', NULL, 'oV', NULL, 'REGISTRATUR', '2026-10-12 11:00', NULL, NULL),
+  (-20000001, -10000005, '72c', '00', '2', '2', 'NB', '0022.NB', 'Notebooks und Zubehör', 'Ersatzbeschaffung 2026', 'neu', NULL, 'REGISTRATUR', '2026-02-10 09:00', NULL, NULL),
+  (-20000002, -10000006, '11', '00', '3', NULL, NULL, '003', 'Liegenschaften', 'Lagerhalle Süd', 'neu', NULL, 'REGISTRATUR', '2025-06-03 10:30', NULL, NULL),
+  (-20000003, -10000008, '12', '10', '1', '1', NULL, '1011', 'Stellenbesetzung', NULL, 'neu', NULL, 'REGISTRATUR', '2026-09-01 08:15', NULL, NULL),
+  (-20000004, -10000009, '77', '20', '1', NULL, NULL, '201', 'IT-Projekte', NULL, 'neu', NULL, 'REGISTRATUR', '2025-11-20 14:00', NULL, NULL),
+  (-20000005, -10000009, '72c', '20', '1', NULL, NULL, '201', 'IT-Projekte', NULL, 'neu', NULL, 'REGISTRATUR', '2026-10-12 11:00', NULL, NULL),
   (-20000006, -10000003, '72c', '00', '2', '1', NULL, '0021', 'Büroausstattung', NULL, 'zdA', NULL, 'REGISTRATUR', '2019-03-04 09:00', 'REGISTRATUR', '2021-12-20 16:00');
 
 -- Vorgänge (Aktenzeichen ORG-AKTE/VORG)
 INSERT INTO dsv_vorg (lfd_vorgnr, lfd_aktenr, org, hgruppe, gruppe, ugruppe, tglieder, akte, vorg, vorg_nr, betreff, bemerkung, status, bearbeiter, datum_letzteverf, erst_registrator, erst_regdatum, vorschl_beh, entsch_archiv) VALUES
   (-30000001, -20000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 'Ausschreibung Notebooks', NULL, 'GG', 'BEARBEITER', '2026-10-20 10:00', 'REGISTRATUR', '2026-02-10 09:05', NULL, NULL),
   (-30000002, -20000001, '72c', '00', '2', '2', 'NB', '0022.NB', '2', 2, 'Rahmenvertrag Zubehör', NULL, 'zdA', NULL, '2026-03-01 12:00', 'REGISTRATUR', '2026-02-12 09:00', 'V', NULL),
-  (-30000003, -20000002, '11', '00', '3', NULL, NULL, '003', '1', 1, 'Mietvertrag Lagerhalle Süd', NULL, 'oV', NULL, '2026-10-10 09:00', 'REGISTRATUR', '2025-06-03 10:35', NULL, NULL),
-  (-30000004, -20000003, '12', '10', '1', '1', NULL, '1011', 'IT-2026-03', 1, 'Sachbearbeitung IT (Kennziffer IT-2026-03)', NULL, 'oV', NULL, '2026-10-05 08:00', 'REGISTRATUR', '2026-09-01 08:20', NULL, NULL),
-  (-30000005, -20000004, '77', '20', '1', NULL, NULL, '201', '1', 1, 'Website-Relaunch', NULL, 'oV', NULL, '2026-09-15 15:00', 'REGISTRATUR', '2025-11-20 14:05', NULL, NULL),
-  (-30000006, -20000005, '72c', '20', '1', NULL, NULL, '201', '1', 1, 'Netzwerkerneuerung Standort Nord', NULL, 'oV', NULL, '2026-10-12 11:00', 'REGISTRATUR', '2026-10-12 11:05', NULL, NULL),
+  (-30000003, -20000002, '11', '00', '3', NULL, NULL, '003', '1', 1, 'Mietvertrag Lagerhalle Süd', NULL, 'neu', NULL, '2026-10-10 09:00', 'REGISTRATUR', '2025-06-03 10:35', NULL, NULL),
+  (-30000004, -20000003, '12', '10', '1', '1', NULL, '1011', 'IT-2026-03', 1, 'Sachbearbeitung IT (Kennziffer IT-2026-03)', NULL, 'neu', NULL, '2026-10-05 08:00', 'REGISTRATUR', '2026-09-01 08:20', NULL, NULL),
+  (-30000005, -20000004, '77', '20', '1', NULL, NULL, '201', '1', 1, 'Website-Relaunch', NULL, 'neu', NULL, '2026-09-15 15:00', 'REGISTRATUR', '2025-11-20 14:05', NULL, NULL),
+  (-30000006, -20000005, '72c', '20', '1', NULL, NULL, '201', '1', 1, 'Netzwerkerneuerung Standort Nord', NULL, 'neu', NULL, '2026-10-12 11:00', 'REGISTRATUR', '2026-10-12 11:05', NULL, NULL),
   (-30000007, -20000006, '72c', '00', '2', '1', NULL, '0021', '1', 1, 'Büromöbel 2019', NULL, 'zdA', NULL, '2021-12-20 16:00', 'REGISTRATUR', '2019-03-04 09:05', 'V', 'V');
 
 -- Dokumente (Aktenzeichen ORG-AKTE/VORG/DOKUNR); DATEIPFAD/DATEINAME verweisen auf die Datei
 INSERT INTO dsv_doku (lfd_doknr, lfd_aktenr, lfd_vorgnr, org, hgruppe, gruppe, ugruppe, tglieder, akte, vorg, vorg_nr, dokunr, betreff, bemerkung, eai_kennung, status, klasse, autor, bearbeiter, erstdatum, datum_letzteverf, form_pe, dateiname, dateipfad, fremdnr, erst_registrator, erst_regdatum, geheim) VALUES
-  (9700000001, -20000001, -30000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 1, 'Leistungsbeschreibung Notebooks', NULL, 'I', 'oV', 'OF', 'BEARBEITER', NULL, '2026-10-01', '2026-10-01 09:00', 'EL', 'Leistungsbeschreibung.docx', '\\fileserver\beschaffung\2026\notebooks', NULL, 'REGISTRATUR', '2026-10-01 09:00', 'N'),
-  (9700000002, -20000001, -30000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 2, 'Angebot Beispiel GmbH', 'Angebotssumme 23.450 EUR', 'E', 'oV', 'OF', NULL, NULL, '2026-10-20', '2026-10-20 10:00', 'EL', '2026-0815.pdf', 'https://example.org/angebote', 'V-2026-0815', 'REGISTRATUR', '2026-10-20 10:00', 'N'),
-  (9700000003, -20000001, -30000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 3, 'Vergabevermerk (vertraulich)', NULL, 'I', 'oV', 'NF', 'BEARBEITER', NULL, '2026-10-22', '2026-10-22 14:00', 'EL', 'Vergabevermerk.docx', '\\fileserver\beschaffung\2026\notebooks', NULL, 'BEARBEITER', '2026-10-22 14:00', 'J'),
+  (9700000001, -20000001, -30000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 1, 'Leistungsbeschreibung Notebooks', NULL, 'I', 'neu', 'OF', 'BEARBEITER', NULL, '2026-10-01', '2026-10-01 09:00', 'EL', 'Leistungsbeschreibung.docx', '\\fileserver\beschaffung\2026\notebooks', NULL, 'REGISTRATUR', '2026-10-01 09:00', 'N'),
+  (9700000002, -20000001, -30000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 2, 'Angebot Beispiel GmbH', 'Angebotssumme 23.450 EUR', 'E', 'neu', 'OF', NULL, NULL, '2026-10-20', '2026-10-20 10:00', 'EL', '2026-0815.pdf', 'https://example.org/angebote', 'V-2026-0815', 'REGISTRATUR', '2026-10-20 10:00', 'N'),
+  (9700000003, -20000001, -30000001, '72c', '00', '2', '2', 'NB', '0022.NB', '1', 1, 3, 'Vergabevermerk (vertraulich)', NULL, 'I', 'neu', 'NF', 'BEARBEITER', NULL, '2026-10-22', '2026-10-22 14:00', 'EL', 'Vergabevermerk.docx', '\\fileserver\beschaffung\2026\notebooks', NULL, 'BEARBEITER', '2026-10-22 14:00', 'J'),
   (9700000004, -20000001, -30000002, '72c', '00', '2', '2', 'NB', '0022.NB', '2', 2, 1, 'Rahmenvertrag Zubehör', NULL, 'A', 'zdA', 'OF', 'BEARBEITER', NULL, '2026-03-01', '2026-03-01 12:00', 'P', NULL, NULL, NULL, 'REGISTRATUR', '2026-03-01 12:00', 'N'),
-  (9700000005, -20000002, -30000003, '11', '00', '3', NULL, NULL, '003', '1', 1, 1, 'Angebot Vertragsverlängerung', NULL, 'E', 'oV', 'OF', NULL, NULL, '2026-10-10', '2026-10-10 09:00', 'EL', 'Verlaengerung.pdf', 'https://intranet.example/liegenschaften/lager-sued', 'LS-17/26', 'REGISTRATUR', '2026-10-10 09:00', 'N'),
-  (9700000006, -20000003, -30000004, '12', '10', '1', '1', NULL, '1011', 'IT-2026-03', 1, 1, 'Bewerbung Max Mustermann', NULL, 'E', 'oV', 'NF', NULL, NULL, '2026-10-05', '2026-10-05 08:00', 'EL', 'Mustermann_Max.pdf', '\\fileserver\personal\bewerbungen\IT-2026-03', NULL, 'REGISTRATUR', '2026-10-05 08:00', 'J'),
-  (9700000007, -20000004, -30000005, '77', '20', '1', NULL, NULL, '201', '1', 1, 1, 'Protokoll Kick-off', NULL, 'I', 'oV', 'OF', 'REFERAT77', NULL, '2026-09-15', '2026-09-15 15:00', 'EL', 'kick-off', 'https://wiki.example/projekte/website-relaunch', NULL, 'REFERAT77', '2026-09-15 15:00', 'N'),
-  (9700000008, -20000005, -30000006, '72c', '20', '1', NULL, NULL, '201', '1', 1, 1, 'Netzplan Standort Nord', NULL, 'I', 'oV', 'OF', 'BEARBEITER', NULL, '2026-10-12', '2026-10-12 11:00', 'EL', 'Netzplan_Nord.vsdx', '\\fileserver\it\netze\nord', NULL, 'BEARBEITER', '2026-10-12 11:00', 'N'),
+  (9700000005, -20000002, -30000003, '11', '00', '3', NULL, NULL, '003', '1', 1, 1, 'Angebot Vertragsverlängerung', NULL, 'E', 'neu', 'OF', NULL, NULL, '2026-10-10', '2026-10-10 09:00', 'EL', 'Verlaengerung.pdf', 'https://intranet.example/liegenschaften/lager-sued', 'LS-17/26', 'REGISTRATUR', '2026-10-10 09:00', 'N'),
+  (9700000006, -20000003, -30000004, '12', '10', '1', '1', NULL, '1011', 'IT-2026-03', 1, 1, 'Bewerbung Max Mustermann', NULL, 'E', 'neu', 'NF', NULL, NULL, '2026-10-05', '2026-10-05 08:00', 'EL', 'Mustermann_Max.pdf', '\\fileserver\personal\bewerbungen\IT-2026-03', NULL, 'REGISTRATUR', '2026-10-05 08:00', 'J'),
+  (9700000007, -20000004, -30000005, '77', '20', '1', NULL, NULL, '201', '1', 1, 1, 'Protokoll Kick-off', NULL, 'I', 'neu', 'OF', 'REFERAT77', NULL, '2026-09-15', '2026-09-15 15:00', 'EL', 'kick-off', 'https://wiki.example/projekte/website-relaunch', NULL, 'REFERAT77', '2026-09-15 15:00', 'N'),
+  (9700000008, -20000005, -30000006, '72c', '20', '1', NULL, NULL, '201', '1', 1, 1, 'Netzplan Standort Nord', NULL, 'I', 'neu', 'OF', 'BEARBEITER', NULL, '2026-10-12', '2026-10-12 11:00', 'EL', 'Netzplan_Nord.vsdx', '\\fileserver\it\netze\nord', NULL, 'BEARBEITER', '2026-10-12 11:00', 'N'),
   (9700000009, -20000006, -30000007, '72c', '00', '2', '1', NULL, '0021', '1', 1, 1, 'Lieferschein Büromöbel', NULL, 'E', 'zdA', 'OF', NULL, NULL, '2019-04-02', '2019-04-02 10:00', 'P', NULL, NULL, NULL, 'REGISTRATUR', '2019-04-02 10:00', 'N');
 
 -- Geheime Dokumente: zusätzlich berechtigte Sachbearbeiter

@@ -1,6 +1,7 @@
 // Nacharbeit für ein Schema, das ora2pg selbst angelegt hat (statt db/altschema.sql). Sollzustand ist altschema.sql:
-//   1. Sequenzen, die fehlen, mit Startwert aus dem Oracle-Export anlegen; Sequenzen hinter den vergebenen Nummern
-//      auf die nächste freie Nummer setzen.
+//   1. Sequenzen, die fehlen, mit Startwert aus dem Oracle-Export anlegen. Sind die Nummern direkt nach dem Stand der
+//      Sequenz schon vergeben (der Export ist älter als die Daten), wird sie hinter diese Nummern gesetzt. Nummern weit
+//      entfernt (z. B. umregistrierte Vorgänge aus DSV_SEQ_UMR) bleiben unberücksichtigt, damit die Bereiche getrennt bleiben.
 //   2. Primär- und Unique-Schlüssel: erkannt an Tabelle und Spalten, nicht am Namen (ora2pg vergibt die Namen ohne
 //      KEEP_PKEY_NAMES neu, z. B. dsv_akte_pkey statt PKAKTE). Gibt es nur einen eindeutigen Index, wird er als Schlüssel
 //      übernommen (USING INDEX), sonst wird der Schlüssel angelegt. UQGVP/UQLAPAKTE2 mit NULLS NOT DISTINCT wie in Oracle.
@@ -123,18 +124,21 @@ async function plan() {
     const bezug = SEQUENZ_SPALTE[s.name];
     if (!bezug) continue;
     const [tabelle, spalte] = bezug;
-    const { kleinste, groesste } = await zeile(`SELECT MIN(${spalte}) AS kleinste, MAX(${spalte}) AS groesste FROM ${tabelle}`);
-    const grenze = s.steigend ? groesste : kleinste;
-    if (grenze === null || grenze === undefined) continue;
     let kommt = s.start;
     if (!neu) {
       const { last_value: letzte, is_called: benutzt } = await zeile(`SELECT last_value, is_called FROM ${seqSchema}.${s.name}`);
       const { increment_by: schrittweite } = await zeile('SELECT increment_by FROM pg_sequences WHERE schemaname = $1 AND sequencename = $2', [seqSchema, s.name]);
       kommt = benutzt ? letzte + schrittweite : letzte;
     }
-    if (s.steigend ? kommt <= grenze : kommt >= grenze) {
-      const naechste = s.steigend ? grenze + 1 : grenze - 1;
-      schritt(`Sequenz ${s.name} vergäbe ${kommt}, vergeben bis ${grenze} → nächste Nummer ${naechste}`, `SELECT setval('${neu ? schema : seqSchema}.${s.name}', ${naechste}, false)`);
+    // vergebene Nummern im Fenster ab dem Stand der Sequenz (in ihrer Richtung)
+    const FENSTER = 1000000;
+    const { belegt, rand } = await zeile(s.steigend
+      ? `SELECT COUNT(*) AS belegt, MAX(${spalte}) AS rand FROM ${tabelle} WHERE ${spalte} >= $1 AND ${spalte} < $1::bigint + ${FENSTER}`
+      : `SELECT COUNT(*) AS belegt, MIN(${spalte}) AS rand FROM ${tabelle} WHERE ${spalte} <= $1 AND ${spalte} > $1::bigint - ${FENSTER}`, [kommt]);
+    if (belegt > 0) {
+      const naechste = s.steigend ? rand + 1 : rand - 1;
+      schritt(`Sequenz ${s.name} vergäbe ${kommt}, dort sind ${belegt} Nummern schon vergeben (bis ${rand}) → nächste Nummer ${naechste}`,
+        `SELECT setval('${neu ? schema : seqSchema}.${s.name}', ${naechste}, false)`);
     }
   }
 
